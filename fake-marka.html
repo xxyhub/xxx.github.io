@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Para Foto/Video</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: limegreen;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-y: auto; /* Dikey kaydırmayı etkinleştirir */
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px;
+            color: limegreen;
+            font-size: 3rem; /* Başlık boyutunu büyüttük */
+            text-transform: uppercase; /* Harfleri büyük yaptık */
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            padding-bottom: 20px; /* Daha iyi kaydırma için alttan boşluk eklenir */
+        }
+
+        .gallery-item {
+            width: 600px; /* Genişlik iki katına çıkarıldı */
+            height: 400px; /* Yükseklik iki katına çıkarıldı */
+            overflow: hidden;
+            border: 2px solid limegreen;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item img, .gallery-item video {
+            width: 100%; /* Görseller tam galeri öğesine sığar */
+            height: 100%; /* Videolar tam galeri öğesine sığar */
+            object-fit: cover; /* Oranlı şekilde sığmasını sağlar */
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px limegreen;
+        }
+
+        /* Kaydırma çubuğu özelleştirme */
+        body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: limegreen;
+            border-radius: 5px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fake Para Fotoğraf ve Video Galerisi</h1>
+
+    <!-- Fotoğraf Galerisi -->
+    <div class="gallery">
+        <!-- 12 Fotoğraf -->
+        <div class="gallery-item">
+            <img src="fake-photo1.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo2.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo3.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo4.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo5.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo6.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo7.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo8.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo9.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo10.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo11.jpg" alt="">
+        </div>
+        <div class="gallery-item">
+            <img src="fake-photo12.jpg" alt="">
+        </div>
+
+        <!-- 6 Video -->
+        <div class="gallery-item">
+            <video src="fake-video1.mp4" controls></video>
+        </div>
+        <div class="gallery-item">
+            <video src="fake-video2.mp4" controls></video>
+        </div>
+        <div class="gallery-item">
+            <video src="fake-video3.mp4" controls></video>
+        </div>
+        <div class="gallery-item">
+            <video src="fake-video4.mp4" controls></video>
+        </div>
+        <div class="gallery-item">
+            <video src="fake-video5.mp4" controls></video>
+        </div>
+        <div class="gallery-item">
+            <video src="fake-video6.mp4" controls></video>
+        </div>
+    </div>
+</body>
+</html>

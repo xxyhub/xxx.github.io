@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T A G 21</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: limegreen;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .main-content {
+            text-align: center;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 15rem;
+            text-align: center;
+            text-transform: uppercase;
+            animation: vibrate 0.2s infinite;
+            margin-top: 60px;
+        }
+
+        @keyframes vibrate {
+            0% { transform: translate(0px, 0px); }
+            25% { transform: translate(3px, -3px); }
+            50% { transform: translate(-3px, 3px); }
+            75% { transform: translate(3px, 3px); }
+            100% { transform: translate(-3px, -3px); }
+        }
+
+        .button {
+            margin-top: 30px;
+            padding: 30px 100px;
+            font-size: 3rem;
+            color: limegreen;
+            background: transparent;
+            border: 3px solid limegreen;
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: color 0.3s ease, background 0.3s ease;
+            border-radius: 25px;
+        }
+
+        .button:hover {
+            color: black;
+            background: limegreen;
+        }
+
+        .button:active {
+            background: limegreen;
+            color: black;
+        }
+
+        .announcement {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: limegreen;
+            padding: 20px;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            width: 250px;
+            text-align: center;
+            box-shadow: 0 0 10px limegreen;
+        }
+
+        .social-media {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .social-media a {
+            display: block;
+            width: 80px;
+            height: 80px;
+        }
+
+        .social-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .social-media a:hover img {
+            transform: scale(1.15);
+        }
+
+        .hack-message {
+            font-size: 4rem;
+            color: red;
+            font-family: 'Courier New', Courier, monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: blink 1s infinite step-start;
+            margin-top: 160px;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            font-size: 1rem;
+            color: limegreen;
+            text-align: center;
+            width: 100%;
+        }
+
+        .footer a {
+            color: limegreen;
+            text-decoration: none;
+        }
+
+        .info-box {
+            position: fixed;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: limegreen;
+            padding: 20px;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            width: 250px;
+            text-align: center;
+            box-shadow: 0 0 10px limegreen;
+            bottom: 110px;
+        }
+
+        .music-box {
+            position: fixed;
+            bottom: 450px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: limegreen;
+            padding: 20px;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            width: 250px;
+            text-align: center;
+            box-shadow: 0 0 10px limegreen;
+        }
+
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-button {
+            background-color: transparent;
+            color: limegreen;
+            border: 2px solid limegreen;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .control-button:hover {
+            background-color: limegreen;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <h1>T A G 21</h1>
+            <button class="button" onclick="window.location.href = 'hosgeldiniz.html';">Siteye Giriş Yap</button>
+            <p class="hack-message">Beta Sürüm</p>
+        </div>
+    </div>
+
+    <div class="announcement">
+        <p>Önemli Duyuru: Yeni güncellemeler yapıldı!</p>
+    </div>
+
+    <!-- Müzik kutusu -->
+    <div class="music-box">
+        <p>Çalıyor: <span id="current-song-name">Şarkı 1</span></p>
+        <div class="music-controls">
+            <button class="control-button" id="prev-button">⏪</button> <!-- Önceki sembolü -->
+            <button class="control-button" id="play-pause-button">▶</button> <!-- Başlat sembolü -->
+            <button class="control-button" id="next-button">⏩</button> <!-- Sonraki sembolü -->
+        </div>
+    </div>
+
+    <!-- Sol tarafa logolar -->
+    <div class="social-media">
+        <a href="https://discord.com" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord">
+        </a>
+        <a href="https://www.instagram.com/only_k_dc/" target="_blank">
+            <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+        </a>
+        <a href="https://t.me/narinj21" target="_blank">
+            <img src="https://image.similarpng.com/very-thumbnail/2021/10/Telegram-icon-on-transparent-background-PNG.png" alt="Telegram">
+        </a>
+    </div>
+
+    <!-- Lisans kısmı -->
+    <div class="footer">
+        <p>© 2024 Tüm hakları saklıdır - <a href="#">0.0.1</a></p>
+    </div>
+
+    <!-- Bilgi kısmı sağ altta -->
+    <div class="info-box">
+        <p>Bilgi: Bu site bilgilendirici bir sitedir, yazılım ve siber güvenlik öğrenmenize yardımcı olur.</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const playlist = [
+            { name: "PİŞT", file: "müzik/pistt.mp3" },
+            { name: "I Wanna Dance", file: "müzik/dance.mp3" },
+            { name: "Çözemezler", file: "müzik/çözemezler.mp3" }
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+
+        const currentSongName = document.getElementById("current-song-name");
+        const playPauseButton = document.getElementById("play-pause-button");
+        const prevButton = document.getElementById("prev-button");
+        const nextButton = document.getElementById("next-button");
+
+        const audioPlayer = new Audio(playlist[currentSongIndex].file);
+        audioPlayer.pause(); // Başlangıçta müzik duraklatılmış olarak başlar
+
+        currentSongName.textContent = playlist[currentSongIndex].name;
+
+        function playSong() {
+            audioPlayer.play();
+            isPlaying = true;
+            playPauseButton.textContent = "❚❚"; // Duraklat sembolü
+        }
+
+        function pauseSong() {
+            audioPlayer.pause();
+            isPlaying = false;
+            playPauseButton.textContent = "▶"; // Başlat sembolü
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                pauseSong();
+            } else {
+                playSong();
+            }
+        }
+
+        function playNextSong() {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            currentSongName.textContent = playlist[currentSongIndex].name;
+            audioPlayer.src = playlist[currentSongIndex].file;
+            playSong();
+        }
+
+        function playPrevSong() {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            currentSongName.textContent = playlist[currentSongIndex].name;
+            audioPlayer.src = playlist[currentSongIndex].file;
+            playSong();
+        }
+
+        audioPlayer.onended = playNextSong;
+
+        playPauseButton.addEventListener("click", togglePlayPause);
+        nextButton.addEventListener("click", playNextSong);
+        prevButton.addEventListener("click", playPrevSong);
+    
+    </script>
+</body>
+</html>

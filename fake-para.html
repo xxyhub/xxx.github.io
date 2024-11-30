@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake Para Foto/Video</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: limegreen;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-y: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px;
+            color: limegreen;
+            font-size: 3rem;
+            text-transform: uppercase;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+
+        .filter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter label {
+            font-size: 1.2rem;
+        }
+
+        .filter select {
+            padding: 10px;
+            background-color: black;
+            color: limegreen;
+            border: 2px solid limegreen;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .gallery-item {
+            width: 600px;
+            height: 400px;
+            overflow: hidden;
+            border: 2px solid limegreen;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px limegreen;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            width: 50px;
+            height: 50px;
+            background-color: transparent;
+            color: limegreen;
+            border: 2px solid limegreen;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .back-button::before {
+            content: "←";
+        }
+
+        .back-button:hover {
+            background-color: limegreen;
+            color: black;
+            box-shadow: 0 0 10px limegreen;
+            transform: scale(1.1);
+        }
+
+        /* Modal (Tam Fotoğraf) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: hidden; /* Fotoğrafın dışarı taşmasını engeller */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Modal içinde kaydırılabilir fotoğraf */
+        .modal-content img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain; /* Resmin orantılı olarak ölçeklenmesi için */
+        }
+
+        /* Kaydırma çubuğunun gizlenmesi */
+        .modal-content {
+            overflow: auto; /* Kaydırma alanını aktif hale getir */
+            scrollbar-width: none; /* Firefox için */
+            -ms-overflow-style: none; /* Internet Explorer için */
+        }
+
+        .modal-content::-webkit-scrollbar { /* Chrome, Safari, Edge */
+            display: none;
+        }
+
+        .close-btn, .download-btn {
+            position: absolute;
+            top: 10px;
+            background-color: limegreen;
+            color: black;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            z-index: 1001;
+        }
+
+        .close-btn {
+            right: 10px;
+        }
+
+        .download-btn {
+            right: 100px;
+        }
+
+        .close-btn:hover, .download-btn:hover {
+            background-color: black;
+            color: limegreen;
+        }
+    </style>
+</head>
+<body>
+    <!-- Yeni Geri Dönme Butonu -->
+    <a href="hosgeldiniz.html" class="back-button"></a>
+
+    <h1>Fake Para Fotoğraf ve Video Galerisi</h1>
+
+    <!-- Filtreler -->
+    <div class="filters">
+        <div class="filter">
+            <label for="currencyFilter">Para Birimi</label>
+            <select id="currencyFilter" onchange="filterGallery()">
+                <option value="all">Tümü</option>
+                <option value="dollar">Dolar</option>
+                <option value="euro">Euro</option>
+                <option value="lira">Türk Lirası</option>
+            </select>
+        </div>
+        <div class="filter">
+            <label for="typeFilter">Tür</label>
+            <select id="typeFilter" onchange="filterGallery()">
+                <option value="all">Tümü</option>
+                <option value="photo">Fotoğraf</option>
+                <option value="video">Video</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Fotoğraf Galerisi -->
+    <div class="gallery">
+        <!-- Dolar -->
+        <div class="gallery-item dollar photo" onclick="openModal('fake-para/para16.jpg')">
+            <img src="fake-para/para16.jpg" alt="">
+        </div>
+        <div class="gallery-item dollar photo" onclick="openModal('fake-para/para15.jpg')">
+            <img src="fake-para/para15.jpg" alt="">
+        </div>
+        <div class="gallery-item dollar video">
+            <video src="fake-para/paravid3.mp4" muted controls>
+                <source src="fake-para/paravid3.mp4" type="video/mp4">
+                Tarayıcınız bu videoyu desteklemiyor.
+            </video>
+        </div>
+
+        <!-- Euro -->
+        <div class="gallery-item euro photo" onclick="openModal('fake-para/para14.jpg')">
+            <img src="fake-para/para14.jpg" alt="">
+        </div>
+        <div class="gallery-item euro photo" onclick="openModal('fake-para/para13.jpg')">
+            <img src="fake-para/para13.jpg" alt="">
+        </div>
+        <div class="gallery-item euro video">
+            <video src="fake-para/paravid2.mp4" muted controls>
+                <source src="fake-para/paravid2.mp4" type="video/mp4">
+                Tarayıcınız bu videoyu desteklemiyor.
+            </video>
+        </div>
+
+        <!-- Türk Lirası (Yeni Fotoğraflar Eklendi) -->
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para1.jpg')">
+            <img src="fake-para/para1.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para2.jpg')">
+            <img src="fake-para/para2.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para3.jpg')">
+            <img src="fake-para/para3.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para4.jpg')">
+            <img src="fake-para/para4.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para5.jpg')">
+            <img src="fake-para/para5.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para6.jpg')">
+            <img src="fake-para/para6.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para7.jpg')">
+            <img src="fake-para/para7.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para8.jpg')">
+            <img src="fake-para/para8.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para9.jpg')">
+            <img src="fake-para/para9.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para10.jpg')">
+            <img src="fake-para/para10.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para11.jpg')">
+            <img src="fake-para/para11.jpg" alt="">
+        </div>
+        <div class="gallery-item lira photo" onclick="openModal('fake-para/para12.jpg')">
+            <img src="fake-para/para12.jpg" alt="">
+        </div>
+        <div class="gallery-item lira video">
+            <video src="fake-para/paravid1.mp4" muted controls>
+                <source src="fake-para/paravid1.mp4" type="video/mp4">
+                Tarayıcınız bu videoyu desteklemiyor.
+            </video>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="">
+            <button class="close-btn" onclick="closeModal()">X</button>
+            <button class="download-btn" onclick="downloadImage()">İndir</button>
+        </div>
+    </div>
+
+    <script>
+        function filterGallery() {
+            const currency = document.getElementById('currencyFilter').value;
+            const type = document.getElementById('typeFilter').value;
+
+            const items = document.querySelectorAll('.gallery-item');
+
+            items.forEach(item => {
+                const matchesCurrency = (currency === 'all' || item.classList.contains(currency));
+                const matchesType = (type === 'all' || item.classList.contains(type));
+
+                if (matchesCurrency && matchesType) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function openModal(imageSrc) {
+            const modal = document.getElementById('photoModal');
+            const modalImage = document.getElementById('modalImage');
+            modal.style.display = 'flex';
+            modalImage.src = imageSrc;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('photoModal');
+            modal.style.display = 'none';
+        }
+
+        function downloadImage() {
+            const imageSrc = document.getElementById('modalImage').src;
+            const link = document.createElement('a');
+            link.href = imageSrc;
+            link.download = imageSrc.split('/').pop();
+            link.click();
+        }
+    </script>
+</body>
+</html>

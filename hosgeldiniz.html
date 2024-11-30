@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoş Geldiniz</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: limegreen;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none; /* Metin seçimini engelle */
+        }
+
+        /* Açılış yükleme ekranı */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .loading-text {
+            font-size: 2rem;
+            color: limegreen;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-container {
+            width: 80%;
+            background-color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 20px;
+            width: 0;
+            background-color: limegreen;
+            transition: width 0.1s ease;
+        }
+
+        /* Ana içerik */
+        .hidden {
+            display: none;
+        }
+
+        /* Üst Bar */
+        .top-bar {
+            width: 100%;
+            height: 60px;
+            background-color: #2f2f2f;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-left: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        /* Çıkış butonu */
+        .exit-button {
+            font-size: 1.2rem;
+            color: white;
+            background: transparent;
+            border: 3px solid #444;
+            border-radius: 25px;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .exit-button:hover {
+            background-color: limegreen;
+            color: black;
+            transform: scale(1.1);
+        }
+
+        /* Üst Bar Linkleri */
+        .top-bar a {
+            color: limegreen;
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin-right: 70px;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        .top-bar a:hover {
+            color: white;
+        }
+
+        /* Ana Menü Yazısı */
+        .top-bar .menu-label {
+            color: limegreen;
+            font-size: 1.5rem;
+            margin: 0 70px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* Menü Kutuları */
+        .menu-container {
+            display: flex;
+            flex-direction: row;
+            gap: 80px;
+            margin-top: 100px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .menu-item {
+            font-size: 2rem;
+            color: limegreen;
+            padding: 20px 50px;
+            border: 2px solid limegreen;
+            text-transform: uppercase;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            height: 200px;
+            margin: 20px;
+        }
+
+        .menu-item:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gizli alan */
+        .hidden {
+            display: none;
+        }
+
+        /* Siteye Giriş Mesajı Kutusu */
+        .giris-mesaji-box {
+            border: 2px solid limegreen;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            text-align: center;
+            background-color: rgba(0, 255, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 0 10px limegreen;
+        }
+
+        .giris-mesaji {
+            color: limegreen;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        /* Mavi odak (focus) çerçevesini kaldır */
+        * {
+            outline: none;
+        }
+
+        a, button, .menu-item {
+            outline: none; /* Tüm bağlantılar ve butonlar için odak sınırını kaldır */
+        }
+
+        /* Sağ tık ve sol tıklama ile metin seçimini engelle */
+        body, .top-bar, .menu-item, .exit-button {
+            user-select: none; /* Metin seçimi yapılmasını engeller */
+        }
+    </style>
+</head>
+<body>
+    <!-- Yükleniyor Ekranı -->
+    <div class="loading-container" id="loadingScreen">
+        <div class="loading-text" id="loadingText">Açılıyor...</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <!-- Ana Menü ve içerik (başlangıçta gizli) -->
+    <div id="mainContent" class="hidden">
+        <div class="top-bar" id="topBar">
+            <a href="index.html" class="exit-button">Çıkış</a>
+            <span class="menu-label" id="anaMenu">Ana Menü</span>
+            <a href="#" id="siberMenu">Siber</a>
+            <a href="#" id="yazilimMenu">Yazılım</a>
+            <a href="#" id="fakeMenu">Fake</a>
+            <a href="yardimci-kodlar.html">Hazır Kod</a>
+            <a href="oyunlar.html">Oyun Oyna</a>
+        </div>
+        
+        <div class="menu-container hidden" id="siberSection">
+            <div class="menu-item siber-guvenlik">
+                <h2>Siber Güvenlik</h2>
+            </div>
+            <div class="menu-item internette-gizlilik">
+                <h2>İnternette Gizlilik</h2>
+            </div>
+        </div>
+        
+        <div class="menu-container hidden" id="yazilimSection">
+            <div class="menu-item yazilim-ogren">
+                <h2>Yazılım Öğren</h2>
+            </div>
+        </div>
+        
+        <!-- Fake Section -->
+        <div class="menu-container hidden" id="fakeSection">
+            <a href="fake-photoshop.html" class="menu-item fake-photoshop">
+                <h2>Fake Photoshop</h2>
+            </a>
+            <a href="fake-ses.html" class="menu-item fake-ses">
+                <h2>Fake Ses</h2>
+            </a>
+            <a href="fake-banka-hesabi.html" class="menu-item fake-banka-hesabi">
+                <h2>Fake Banka Hesabı</h2>
+            </a>
+            <a href="fake-para.html" class="menu-item fake-para">
+                <h2>Fake Para Foto/Video</h2>
+            </a>
+            <a href="fake-marka.html" class="menu-item fake-marka">
+                <h2>Fake Marka Foto/Video</h2>
+            </a>
+            <a href="fake-st.html" class="menu-item fake-st">
+                <h2>Fake ST Foto/Video</h2>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Yükleme animasyonu
+        let progress = 0;
+        const progressBar = document.getElementById('progressBar');
+        const loadingText = document.getElementById('loadingText');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainContent = document.getElementById('mainContent');
+
+        const interval = setInterval(function() {
+            if (progress < 100) {
+                progress += 50;
+                progressBar.style.width = progress + '%';
+                loadingText.innerText = 'Açılıyor... ' + progress + '%';
+            } else {
+                clearInterval(interval);
+                setTimeout(function() {
+                    loadingScreen.style.display = 'none';
+                    mainContent.classList.remove('hidden');
+                }, 500);
+            }
+        }, 1000);
+
+        // Menü ve içerik tıklama olayları
+        document.getElementById('siberMenu').addEventListener('click', function() {
+            document.getElementById('siberSection').classList.toggle('hidden');
+        });
+
+        document.getElementById('yazilimMenu').addEventListener('click', function() {
+            document.getElementById('yazilimSection').classList.toggle('hidden');
+        });
+
+        document.getElementById('fakeMenu').addEventListener('click', function() {
+            document.getElementById('fakeSection').classList.toggle('hidden');
+        });
+
+        // Sağ tık ve kopyalamayı engelle
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault(); // Sağ tık menüsünü engelle
+        });
+
+        document.addEventListener('copy', function(event) {
+            event.preventDefault(); // Kopyalama işlemini engelle
+        });
+
+        // Kısayol engellemeleri
+        document.addEventListener('keydown', function(event) {
+            // Ctrl+Shift+I (Geliştirici Araçları), Ctrl+Shift+J (Konsol), Ctrl+U (Kaynağı Gör)
+            if (event.ctrlKey && (event.key === 'i' || event.key === 'j' || event.key === 'u')) {
+                event.preventDefault();
+            }
+    
+            // F12 (Geliştirici Araçları)
+            if (event.key === 'F12') {
+                event.preventDefault();
+            }
+        });
+
+        // Geliştirici araçları algılama
+        (function() {
+            let devtools = { open: false };
+            const threshold = 160;
+
+            const test = (function() {
+                const element = new Image();
+                Object.defineProperty(element, 'id', {
+                    get: function() {
+                        devtools.open = true;
+                    }
+                });
+                console.log(element);
+            })();
+
+            setInterval(function() {
+                if (devtools.open) {
+                    alert('Lütfen geliştirici araçlarını kapatın!');
+                    devtools.open = false;
+                }
+            }, 1000);
+        })();
+    </script>
+</body>
+</html>

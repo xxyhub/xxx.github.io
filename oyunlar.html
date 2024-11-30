@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie Survival Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            border: 2px solid limegreen;
+            background-color: #333;
+            display: block;
+        }
+
+        #hud {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            margin-top: 10px;
+            color: limegreen;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+    <div id="hud">
+        <div>Health: <span id="health">100</span></div>
+        <div>Coins: <span id="coins">0</span></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Oyun durumu
+        let player = { x: 400, y: 250, size: 30, health: 100, speed: 5 };
+        let zombies = [];
+        let bullets = [];
+        let medkits = [];
+        let coins = 0;
+
+        // Kontrol durumu
+        let keys = {};
+
+        // Oyun hızları
+        const zombieSpeed = 2;
+        const spawnRate = 1000; // ms
+
+        // Oyun döngüsü başlatma
+        let gameInterval, spawnInterval;
+
+        function startGame() {
+            gameInterval = setInterval(updateGame, 16); // 60 FPS
+            spawnInterval = setInterval(spawnEntities, spawnRate);
+            document.addEventListener('keydown', (e) => (keys[e.key] = true));
+            document.addEventListener('keyup', (e) => (keys[e.key] = false));
+            canvas.addEventListener('click', shootBullet);
+        }
+
+        // Rastgele konum oluşturma
+        function randomPosition() {
+            return Math.random() * canvas.width;
+        }
+
+        // Oyuncuyu çiz
+        function drawPlayer() {
+            ctx.fillStyle = 'limegreen';
+            ctx.fillRect(player.x, player.y, player.size, player.size);
+        }
+
+        // Zombileri çiz
+        function drawZombies() {
+            ctx.fillStyle = 'red';
+            zombies.forEach((zombie) => {
+                ctx.fillRect(zombie.x, zombie.y, zombie.size, zombie.size);
+            });
+        }
+
+        // Kurşunları çiz
+        function drawBullets() {
+            ctx.fillStyle = 'yellow';
+            bullets.forEach((bullet) => {
+                ctx.fillRect(bullet.x, bullet.y, bullet.size, bullet.size);
+            });
+        }
+
+        // Medkitleri çiz
+        function drawMedkits() {
+            ctx.fillStyle = 'white';
+            medkits.forEach((kit) => {
+                ctx.fillRect(kit.x, kit.y, kit.size, kit.size);
+            });
+        }
+
+        // Hareketi güncelle
+        function updateMovement() {
+            if (keys['ArrowUp'] && player.y > 0) player.y -= player.speed;
+            if (keys['ArrowDown'] && player.y < canvas.height - player.size)
+                player.y += player.speed;
+            if (keys['ArrowLeft'] && player.x > 0) player.x -= player.speed;
+            if (keys['ArrowRight'] && player.x < canvas.width - player.size)
+                player.x += player.speed;
+        }
+
+        // Zombi hareketi
+        function updateZombies() {
+            zombies.forEach((zombie) => {
+                zombie.x += zombieSpeed * Math.sign(player.x - zombie.x);
+                zombie.y += zombieSpeed * Math.sign(player.y - zombie.y);
+
+                // Çarpışma kontrolü
+                if (
+                    zombie.x < player.x + player.size &&
+                    zombie.x + zombie.size > player.x &&
+                    zombie.y < player.y + player.size &&
+                    zombie.y + zombie.size > player.y
+                ) {
+                    player.health -= 10;
+                    zombie.toRemove = true;
+                }
+            });
+
+            // Çarpışmadan sonra zombiyi kaldır
+            zombies = zombies.filter((zombie) => !zombie.toRemove);
+        }
+
+        // Kurşun hareketi ve çarpışma kontrolü
+        function updateBullets() {
+            bullets.forEach((bullet) => {
+                bullet.y -= bullet.speed;
+                // Zombi çarpışması
+                zombies.forEach((zombie) => {
+                    if (
+                        bullet.x < zombie.x + zombie.size &&
+                        bullet.x + bullet.size > zombie.x &&
+                        bullet.y < zombie.y + zombie.size &&
+                        bullet.y + bullet.size > zombie.y
+                    ) {
+                        zombie.toRemove = true;
+                        bullet.toRemove = true;
+                        coins += 10;
+                    }
+                });
+            });
+
+            // Kullanılmışları kaldır
+            bullets = bullets.filter((bullet) => !bullet.toRemove);
+            zombies = zombies.filter((zombie) => !zombie.toRemove);
+        }
+
+        // Medkit toplama
+        function updateMedkits() {
+            medkits.forEach((kit) => {
+                if (
+                    kit.x < player.x + player.size &&
+                    kit.x + kit.size > player.x &&
+                    kit.y < player.y + player.size &&
+                    kit.y + kit.size > player.y
+                ) {
+                    player.health = Math.min(player.health + 20, 100);
+                    kit.toRemove = true;
+                }
+            });
+
+            medkits = medkits.filter((kit) => !kit.toRemove);
+        }
+
+        // Çizimi güncelle
+        function drawGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            drawZombies();
+            drawBullets();
+            drawMedkits();
+        }
+
+        // Kurşun atışı
+        function shootBullet(event) {
+            bullets.push({
+                x: player.x + player.size / 2 - 5,
+                y: player.y,
+                size: 10,
+                speed: 10,
+            });
+        }
+
+        // Yeni zombi ve medkit ekle
+        function spawnEntities() {
+            zombies.push({
+                x: randomPosition(),
+                y: 0,
+                size: 30,
+            });
+
+            if (Math.random() > 0.7) {
+                medkits.push({
+                    x: randomPosition(),
+                    y: randomPosition(),
+                    size: 20,
+                });
+            }
+        }
+
+        // HUD güncelle
+        function updateHUD() {
+            document.getElementById('health').textContent = player.health;
+            document.getElementById('coins').textContent = coins;
+        }
+
+        // Oyun döngüsü
+        function updateGame() {
+            if (player.health <= 0) {
+                clearInterval(gameInterval);
+                clearInterval(spawnInterval);
+                alert('Oyun bitti! Toplam Coin: ' + coins);
+                return;
+            }
+
+            updateMovement();
+            updateZombies();
+            updateBullets();
+            updateMedkits();
+            drawGame();
+            updateHUD();
+        }
+
+        // Oyunu başlat
+        startGame();
+    </script>
+</body>
+</html>
